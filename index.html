@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta property="og:title" content="트릿 오어 트릭! 똥내낙원">
+<meta property="og:description" content="친구 데려오지 않으면 장난칠 거야! 제일 많이 데려온 사람에게 5천원 기프티콘">
+<title>트릿 오어 트릭! 똥내낙원</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap">
+<style>
+/* Layout: 사탕 포장지 가격표가 붙은 포스터형 히어로 → 참여 방법 → 실시간 랭킹 → 내 초대장 만들기 → 규칙. 밤하늘 단일 테마. */
+:root{
+  --night:#241a35; --dusk:#33264a; --plum:#4a3566;
+  --candy:#f6a8d8; --lilac:#b9a3ff; --pumpkin:#ff9a3c;
+  --bone:#fbf3ff; --mute:#c9b8de; --blood:#e2455f; --ink:#1a1226; --gold:#ffd36b;
+  --display:"Jua","Gowun Dodum",system-ui,sans-serif;
+  --body:"Gowun Dodum",system-ui,sans-serif;
+  --hand:"Nanum Pen Script","Gowun Dodum",cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;background:var(--night);color:var(--bone);font-family:var(--body);font-size:16px;line-height:1.65;padding-inline:16px;overflow-x:hidden;
+  background-image:radial-gradient(circle at 15% 8%,rgba(185,163,255,.18),transparent 40%),radial-gradient(circle at 90% 35%,rgba(246,168,216,.13),transparent 45%),radial-gradient(circle at 50% 100%,rgba(255,154,60,.12),transparent 50%);
+  background-attachment:fixed;transition:filter .7s}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px dashed var(--candy);outline-offset:3px}
+.wrap{max-width:900px;margin:0 auto;padding-block:24px 80px;display:flex;flex-direction:column;gap:60px}
+.eyebrow{font-size:13px;letter-spacing:.14em;color:var(--lilac)}
+.ribbon{height:12px;border-radius:99px;background:repeating-linear-gradient(115deg,var(--pumpkin) 0 14px,var(--lilac) 14px 28px);opacity:.85}
+.btn{background:var(--pumpkin);color:var(--ink);border:none;border-radius:99px;padding:11px 24px;font-family:var(--display);font-size:18px;box-shadow:0 4px 0 #b55e17}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b55e17}
+.btn.sm{padding:6px 14px;font-size:15px;box-shadow:0 3px 0 #b55e17}
+.btn.ghost{background:transparent;color:var(--bone);border:2px solid var(--lilac);box-shadow:none}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero-copy{display:flex;flex-direction:column;gap:18px;min-width:0}
+.headline{font-family:var(--display);font-size:clamp(38px,7vw,68px);line-height:1.02;color:var(--bone);text-shadow:3px 3px 0 var(--plum)}
+.headline em{font-style:normal;color:var(--candy)}
+.prize{align-self:flex-start;position:relative;display:flex;align-items:center;gap:14px;background:var(--gold);color:var(--ink);padding:14px 26px 14px 20px;border-radius:18px;transform:rotate(-2.5deg);box-shadow:6px 6px 0 var(--pumpkin)}
+.prize::before,.prize::after{content:"";position:absolute;top:50%;width:22px;height:30px;transform:translateY(-50%);background:var(--gold);clip-path:polygon(0 0,100% 20%,100% 80%,0 100%,40% 50%)}
+.prize::before{left:-18px}
+.prize::after{right:-18px;transform:translateY(-50%) scaleX(-1)}
+.prize .rank{font-family:var(--display);font-size:18px;background:var(--ink);color:var(--gold);border-radius:12px;padding:4px 10px}
+.prize .amt{font-family:var(--display);font-size:clamp(34px,6vw,46px);line-height:1;font-variant-numeric:tabular-nums}
+.prize .amt small{font-size:.45em;display:block;font-family:var(--body);margin-top:2px}
+.lede{max-width:30em;font-size:17px}
+.lede b{color:var(--pumpkin);font-family:var(--display);font-weight:400}
+.count{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.count .lbl{font-size:14px;color:var(--mute);width:100%}
+.count .u{display:flex;flex-direction:column;align-items:center;background:var(--dusk);border:2px solid var(--plum);border-radius:14px;padding:6px 12px;min-width:62px}
+.count .u b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--candy);font-variant-numeric:tabular-nums;line-height:1.1}
+.count .u span{font-size:12px;color:var(--mute)}
+.count .u.glitch b{color:var(--blood)}
+
+.portrait{position:relative;justify-self:center;width:min(100%,360px)}
+.portrait img{display:block;width:100%;border-radius:200px 200px 28px 28px;border:4px solid var(--lilac);box-shadow:0 0 0 8px var(--dusk),0 0 60px rgba(185,163,255,.35);cursor:pointer;user-select:none;-webkit-user-drag:none;transition:filter .3s}
+.portrait.stare img{filter:hue-rotate(-60deg) saturate(1.6) contrast(1.2)}
+.portrait canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:200px 200px 28px 28px;pointer-events:none}
+.bubble{position:absolute;left:-12px;top:14%;max-width:180px;background:var(--candy);color:var(--ink);padding:10px 14px;border-radius:18px 18px 18px 4px;font-family:var(--hand);font-size:23px;line-height:1.1;transform:rotate(-4deg)}
+
+/* sections */
+.sec-head{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.sec-head h2{font-size:clamp(28px,5vw,40px)}
+.sec-head p{color:var(--mute);max-width:36em}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{background:var(--dusk);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:8px;counter-increment:s;min-width:0}
+.steps li::before{content:counter(s);font-family:var(--display);width:36px;height:36px;border-radius:50%;background:var(--lilac);color:var(--ink);display:grid;place-items:center;font-size:20px}
+.steps h3{font-size:22px;color:var(--candy)}
+.steps p{color:var(--bone);font-size:15px}
+.steps .say{font-family:var(--hand);font-size:22px;color:var(--pumpkin)}
+
+/* ranking */
+
+/* join */
+.join{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;background:var(--dusk);border-radius:28px;padding:24px}
+.qr{width:200px;max-width:100%;background:#fff;padding:12px;border-radius:20px;box-shadow:6px 6px 0 var(--pumpkin);transform:rotate(-2deg)}
+.qr img{display:block;width:100%;image-rendering:pixelated}
+.join-info{display:flex;flex-direction:column;gap:12px;min-width:0}
+.join-info h3{font-size:24px;color:var(--candy)}
+.link{font-family:var(--display);font-size:18px;color:var(--bone);background:var(--night);border:1.5px dashed var(--plum);border-radius:14px;padding:10px 14px;overflow-wrap:anywhere;user-select:all}
+a.btn{text-decoration:none;display:inline-block}
+.headcount{font-size:13px;color:var(--mute);opacity:.15;transition:opacity .5s;cursor:help;align-self:flex-start}
+.headcount:hover,.headcount:focus{opacity:.9;color:var(--blood)}
+
+/* invite card */
+.maker{display:grid;grid-template-columns:.9fr 1.1fr;gap:26px;align-items:start}
+.maker-form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.maker-form label{font-size:14px;color:var(--mute)}
+.maker-form input{padding:12px 16px;border-radius:16px;border:2px solid var(--plum);background:var(--dusk);font-size:18px;width:100%}
+.maker-form input:focus{border-color:var(--candy);outline:none}
+.msg{background:var(--dusk);border-radius:16px;padding:14px;font-size:14px;white-space:pre-line;color:var(--bone);user-select:all;border:1.5px dashed var(--plum)}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px}
+.ticket{position:relative;background:var(--bone);color:var(--ink);border-radius:24px;padding:22px;box-shadow:8px 8px 0 var(--lilac);display:flex;flex-direction:column;gap:12px;overflow:hidden;min-width:0}
+.ticket::after{content:"";position:absolute;left:0;right:0;top:64%;border-top:3px dashed var(--mute)}
+.ticket .hd{display:flex;justify-content:space-between;gap:10px;font-size:12px;letter-spacing:.1em;color:var(--plum)}
+.ticket .top{display:flex;gap:14px;align-items:center}
+.ticket .pic{width:84px;height:84px;border-radius:50%;background-size:180%;background-position:50% 22%;border:3px solid var(--candy);flex:none}
+.ticket .from{font-size:14px;color:var(--plum)}
+.ticket .who{font-family:var(--display);font-size:28px;line-height:1.1;overflow-wrap:anywhere}
+.ticket .line{font-family:var(--hand);font-size:26px;line-height:1.15;color:var(--blood)}
+.ticket .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding-top:16px}
+.ticket .bottom p{font-size:13px;color:var(--plum)}
+.ticket .bottom b{display:block;font-family:var(--display);font-weight:400;font-size:18px;color:var(--ink)}
+.ticket .seal{width:66px;height:66px;border-radius:50%;border:3px solid var(--pumpkin);color:var(--pumpkin);display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:14px;line-height:1.1;transform:rotate(-12deg);flex:none}
+.ticket.under{background:#0d0912;color:var(--candy);box-shadow:8px 8px 0 var(--blood)}
+.ticket.under .hd,.ticket.under .from,.ticket.under .bottom p{color:var(--blood)}
+.ticket.under .bottom b{color:var(--candy)}
+.ticket.under .pic{filter:invert(1) hue-rotate(180deg);border-color:var(--blood)}
+
+/* rules */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.rules ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+.note{background:var(--bone);color:var(--ink);border-radius:20px;padding:20px 22px;transform:rotate(-1.2deg);box-shadow:6px 6px 0 var(--lilac);display:flex;flex-direction:column;gap:8px}
+.note h3{font-size:22px;color:var(--plum)}
+.note .hand{font-family:var(--hand);font-size:24px;color:var(--blood);line-height:1.15}
+
+footer{text-align:center;color:var(--mute);font-size:14px;display:flex;flex-direction:column;gap:6px}
+footer .whisper{color:var(--night);font-size:12px;margin-top:100px}
+footer .whisper::selection{background:var(--blood);color:var(--bone)}
+
+canvas#sky{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.moon{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7d6,#f3d98a);box-shadow:0 0 30px rgba(243,217,138,.5);z-index:4;border:none;padding:0;overflow:hidden}
+.moon .lid{position:absolute;inset:0;background:inherit;transition:clip-path .6s;clip-path:inset(0)}
+.moon .iris{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(circle,#111 0 3px,var(--blood) 4px 8px,#5c1020 9px)}
+.moon:hover .lid,.moon:focus .lid{clip-path:inset(46% 0 46% 0)}
+body.void{filter:invert(1) hue-rotate(180deg) saturate(1.4)}
+.void-msg{position:fixed;inset:0;display:grid;place-items:center;z-index:20;pointer-events:none;opacity:0;transition:opacity .8s;padding:16px}
+.void-msg.on{opacity:1}
+.void-msg p{font-family:var(--hand);font-size:clamp(30px,8vw,56px);color:var(--blood);text-align:center;text-shadow:0 0 18px #000;line-height:1.2}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%) translateY(-150%);background:var(--bone);color:var(--ink);padding:10px 18px;border-radius:14px;font-size:15px;transition:transform .35s;z-index:30;max-width:calc(100% - 32px)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+@media (max-width:760px){
+  .hero,.maker,.rules{grid-template-columns:1fr}
+  .portrait{order:-1;width:min(100%,300px)}
+  .steps{grid-template-columns:1fr}
+  .join{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .join-info{align-items:center}
+  .headcount{align-self:center}
+  .bubble{left:-6px;font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<button class="moon" id="moon" aria-label="달"><span class="iris"></span><span class="lid"></span></button>
+
+<div class="wrap">
+  <div class="ribbon" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">야차파이트클럽 · 똥내낙원 · 할로윈 초대 이벤트</p>
+      <h1 class="headline">트릿 오어 트릭!<br><em>친구 안 데려오면<br>장난칠 거야!</em></h1>
+      <div class="prize"><span class="rank">초대왕 1등</span><span class="amt">5,000원<small>상당 기프티콘</small></span></div>
+      <p class="lede">할로윈 동안 <b>야차파이트클럽 똥내낙원</b>에 친구를 제일 많이 데려온 사람에게 기프티콘을 줘요. 아무도 안 데려오면… 샤비가 장난치러 갈 거예요.</p>
+      <div class="count" id="count" aria-live="off">
+        <span class="lbl" id="countLbl">마감까지</span>
+        <span class="u"><b id="cd">0</b><span>일</span></span>
+        <span class="u"><b id="ch">00</b><span>시간</span></span>
+        <span class="u"><b id="cm">00</b><span>분</span></span>
+        <span class="u"><b id="cs">00</b><span>초</span></span>
+      </div>
+    </div>
+    <div class="portrait" id="portrait">
+      <img id="shabi" src="샤비.jpg" alt="호박 모자와 작은 뿔을 쓴 분홍 트윈테일 소녀 샤비가 턱을 괴고 올려다보는 그림">
+      <canvas id="eyes" aria-hidden="true"></canvas>
+      <p class="bubble" id="bubble">친구 안 데려오면 장난칠 거야♡</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">HOW TO</p>
+      <h2>참여 방법</h2>
+      <p>세 단계면 끝이에요. 데려온 친구가 첫 인사에서 내 이름을 말해야 한 명으로 세요.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>초대장 만들기</h3><p>아래에서 내 이름으로 초대장을 만들어요. 초대장은 스크린샷으로, 초대 문구는 복사해서 보내요.</p></li>
+      <li><h3>친구가 방에 들어와요</h3><p>아래 링크나 QR로 들어온 친구는 첫 인사에 이렇게 말해 주면 돼요.</p><p class="say">"OOO 초대로 왔어요!"</p></li>
+      <li><h3>마감 후 발표</h3><p>방장이 데려온 인원을 세서, 마감 후 1등에게 기프티콘을 보내요.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">ENTRANCE</p>
+      <h2>낙원 입구</h2>
+      <p>QR을 찍거나 링크를 눌러서 들어와요. 친구한테 이 링크를 그대로 보내도 돼요.</p>
+    </div>
+    <div class="join">
+      <div class="qr"><img src="큐알.jpg" alt="똥내낙원 카카오톡 오픈채팅방 QR 코드"></div>
+      <div class="join-info">
+        <h3>야차파이트클럽 똥내낙원</h3>
+        <p class="link" id="roomLink">https://open.kakao.com/o/gXInrCQi</p>
+        <div class="row-btns">
+          <a class="btn" href="https://open.kakao.com/o/gXInrCQi" target="_blank" rel="noopener">방 들어가기</a>
+          <button class="btn ghost" id="copyLink" type="button">링크 복사</button>
+        </div>
+        <p class="headcount" id="headcount" tabindex="0">들어온 사람: 전부 · 나간 사람: 0</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">INVITATION</p>
+      <h2>내 초대장 만들기</h2>
+      <p>이름을 적으면 샤비가 초대장을 써 줘요. 친구한테 보내기 좋게 문구도 같이 만들어 줘요.</p>
+    </div>
+    <div class="maker">
+      <div class="maker-form">
+        <label for="inviter">초대하는 사람 (내 이름)</label>
+        <input id="inviter" maxlength="12" placeholder="예: 호박도둑" autocomplete="off">
+        <label for="msg">친구에게 보낼 문구</label>
+        <p class="msg" id="msg"></p>
+        <div class="row-btns">
+          <button class="btn" id="copy" type="button">문구 복사하기</button>
+        </div>
+      </div>
+      <div class="ticket" id="ticket">
+        <div class="hd"><span>똥내낙원 초대장</span><span>NO. <span id="tno">0000</span></span></div>
+        <div class="top">
+          <div class="pic js-ava"></div>
+          <div><p class="from">보내는 사람</p><p class="who" id="tname">이름을 적어 주세요</p></div>
+        </div>
+        <p class="line" id="tline">할로윈 밤에 낙원으로 놀러 와. 사탕 있어.</p>
+        <div class="bottom">
+          <p>입장하면 첫 인사로<b id="tsay">"OOO 초대로 왔어요!"</b></p>
+          <span class="seal" id="tseal">샤비<br>초대</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rules">
+    <div>
+      <div class="sec-head">
+        <p class="eyebrow">RULES</p>
+        <h2>세는 규칙</h2>
+      </div>
+      <ul>
+        <li>새로 들어온 사람이 첫 인사에서 초대한 사람 이름을 말해야 1명으로 세요.</li>
+        <li>들어왔다가 마감 전에 나간 사람은 빼요.</li>
+        <li>부계정, 이미 있던 멤버의 재입장은 세지 않아요.</li>
+        <li>동점이면 방장이 추첨으로 1등을 정해요.</li>
+        <li>기프티콘은 마감 후 1등에게 개인 메시지로 보내요.</li>
+      </ul>
+    </div>
+    <aside class="note">
+      <h3>샤비의 쪽지</h3>
+      <p>낙원이 너무 조용해. 사탕은 많은데 먹을 사람이 없어. 친구 많이 데려와 줘. 다들 환영이야. 한 번 들어오면 나가기 싫어질걸.</p>
+      <p class="hand">p.s. 친구 안 데려온 사람 이름은 다 적어두고 있어</p>
+    </aside>
+  </section>
+
+  <div class="ribbon" aria-hidden="true"></div>
+  <footer>
+    <p>야차파이트클럽 똥내낙원 · 2026 할로윈 초대 이벤트</p>
+    <p>문의는 방장에게 해 주세요</p>
+    <p class="whisper">낙원에 들어온 사람 수와 나간 사람 수가 맞지 않아요. 아무도 세어보지 않았으면 좋겠어.</p>
+  </footer>
+</div>
+
+<div class="void-msg" id="voidmsg"><p id="voidtext"></p></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const IMG=$('#shabi').src;$$('.js-ava').forEach(e=>e.style.backgroundImage=`url(${IMG})`);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const toast=(t,ms=2600)=>{const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms)};
+
+/* ===== 설정 (방장이 페이지에서 바꿀 수 있음) ===== */
+let cfg={roomLink:'https://open.kakao.com/o/gXInrCQi',end:'2026-10-31T23:59'};
+
+/* ===== 카운트다운 ===== */
+const pad=n=>String(n).padStart(2,'0');
+function tick(){const end=new Date(cfg.end+':00+09:00').getTime(),now=Date.now();let d=Math.max(0,end-now);
+  if(isNaN(end))return;
+  if(d===0){$('#countLbl').textContent='마감됐어요. 결과를 기다려 주세요';}
+  else{const dt=new Date(cfg.end);$('#countLbl').textContent=`마감까지 · ${dt.getMonth()+1}월 ${dt.getDate()}일 ${pad(dt.getHours())}:${pad(dt.getMinutes())}`}
+  const s=Math.floor(d/1000);
+  $('#cd').textContent=Math.floor(s/86400);$('#ch').textContent=pad(Math.floor(s%86400/3600));$('#cm').textContent=pad(Math.floor(s%3600/60));$('#cs').textContent=pad(s%60);
+  // 아주 가끔 날짜가 32일로 보임
+  if(!reduce&&Math.random()<.004){const u=$('#cd').parentElement;u.classList.add('glitch');$('#cd').textContent='32';setTimeout(()=>u.classList.remove('glitch'),600)}}
+setInterval(tick,1000);tick();
+
+/* ===== 입구 ===== */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function copyText(t,el,ok){try{await navigator.clipboard.writeText(t);toast(ok)}
+  catch(e){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('선택해 뒀어요. 길게 눌러 복사해 주세요')}}
+$('#copyLink').onclick=()=>copyText(cfg.roomLink,$('#roomLink'),'링크를 복사했어요');
+{const g=$('#headcount');let gt;const on=()=>{gt=setTimeout(()=>cosmic('나간 사람은 한 명도 없어'),2500)},off=()=>clearTimeout(gt);
+  g.addEventListener('mouseenter',on);g.addEventListener('mouseleave',off);g.addEventListener('focus',on);g.addEventListener('blur',off);
+  g.addEventListener('touchstart',on,{passive:true});g.addEventListener('touchend',off)}
+
+/* ===== 초대장 ===== */
+const lines=['할로윈 밤에 낙원으로 놀러 와. 사탕 있어.','같이 놀 사람이 필요해. 너 말이야.','들어오면 샤비가 반겨 줄 거야. 아마도.','낙원은 늘 자리가 남아. 이상하게도.'];
+let li=0;
+function hash(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%9973;return h}
+function renderInvite(){const n=$('#inviter').value.trim();const t=$('#ticket');
+  const under=['샤비','낙원','아래'].includes(n);t.classList.toggle('under',under);
+  $('#tname').textContent=n||'이름을 적어 주세요';
+  $('#tno').textContent=n?(under?'0000':String(hash(n)).padStart(4,'0')):'0000';
+  $('#tsay').textContent=`"${n||'OOO'} 초대로 왔어요!"`;
+  $('#tline').textContent=under?'이미 와 있잖아. 처음부터. 계속.':lines[n?hash(n)%lines.length:0];
+  $('#tseal').innerHTML=under?'낙원<br>아래':'샤비<br>초대';
+  $('#msg').textContent=`🎃 트릿 오어 트릭! 야차파이트클럽 똥내낙원 할로윈 파티 중!\n안 오면 샤비가 장난치러 간대 👻\n${cfg.roomLink?cfg.roomLink+'\n':''}들어오면 첫 인사로 "${n||'OOO'} 초대로 왔어요!" 라고 말해 줘 👻`}
+$('#inviter').addEventListener('input',renderInvite);renderInvite();
+$('#copy').onclick=()=>copyText($('#msg').textContent,$('#msg'),'복사했어요. 친구에게 붙여넣어 보내 주세요');
+
+/* ===== 밤하늘 ===== */
+const sky=$('#sky'),cx=sky.getContext('2d');let W,H,stars=[],bats=[],skyEye=0;
+function rs(){W=sky.width=innerWidth;H=sky.height=innerHeight;stars=Array.from({length:Math.round(W*H/9000)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,p:Math.random()*6}))}
+rs();addEventListener('resize',rs);
+for(let i=0;i<4;i++)bats.push({x:Math.random()*W,y:Math.random()*H*.5,v:.4+Math.random()*.6,ph:Math.random()*6});
+function bat(b,t){const f=Math.sin(t/120+b.ph)*6;cx.fillStyle='rgba(20,12,30,.7)';cx.beginPath();cx.moveTo(b.x,b.y);cx.quadraticCurveTo(b.x-10,b.y-8-f,b.x-20,b.y+f);cx.quadraticCurveTo(b.x-10,b.y-2,b.x,b.y+4);cx.quadraticCurveTo(b.x+10,b.y-2,b.x+20,b.y+f);cx.quadraticCurveTo(b.x+10,b.y-8-f,b.x,b.y);cx.fill()}
+function loop(t){cx.clearRect(0,0,W,H);
+  for(const s of stars){cx.fillStyle=`rgba(251,243,255,${.35+.35*Math.sin(t/900+s.p)})`;cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill()}
+  if(!reduce)for(const b of bats){b.x+=b.v;b.y+=Math.sin(t/700+b.ph)*.3;if(b.x>W+30){b.x=-30;b.y=Math.random()*H*.5}bat(b,t)}
+  if(skyEye>0){skyEye-=.003;const a=Math.min(1,skyEye*2),x=W*.5,y=H*.38,w=Math.min(W,H)*.45,ox=Math.sin(t/800)*w*.2;
+    cx.save();cx.globalAlpha=a*.5;cx.beginPath();cx.ellipse(x,y,w,w*.28*Math.sin(Math.min(1,skyEye*3)*1.57),0,0,7);cx.fillStyle='#e8d9ff';cx.fill();cx.clip();
+    cx.beginPath();cx.arc(x+ox,y,w*.24,0,7);cx.fillStyle='#e2455f';cx.fill();cx.beginPath();cx.arc(x+ox,y,w*.08,0,7);cx.fillStyle='#000';cx.fill();cx.restore()}
+  requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+setInterval(()=>{if(Math.random()<.08&&skyEye<=0)skyEye=1},20000);
+let busy=false;
+async function cosmic(msg){if(busy)return;busy=true;document.body.classList.add('void');$('#voidtext').textContent=msg;$('#voidmsg').classList.add('on');skyEye=1.6;
+  await new Promise(r=>setTimeout(r,3000));$('#voidmsg').classList.remove('on');await new Promise(r=>setTimeout(r,700));document.body.classList.remove('void');busy=false}
+
+/* ===== 이스터에그 ===== */
+const bl=['친구 안 데려오면 장난칠 거야♡','왜 자꾸 눌러?','…','계속 보고 있네','나도 보고 있어','눈이 몇 개인지 세어볼래?'];let taps=0,tt;
+$('#shabi').onclick=()=>{taps++;clearTimeout(tt);tt=setTimeout(()=>{if(taps<6){taps=0;$('#bubble').textContent=bl[0]}},4000);
+  $('#bubble').textContent=bl[Math.min(taps,5)];
+  if(taps===6){$('#portrait').classList.add('stare');eyes();setTimeout(()=>{$('#portrait').classList.remove('stare');taps=0;$('#bubble').textContent='장난이야 ♡'},6000)}};
+function eyes(){const c=$('#eyes'),r=c.getBoundingClientRect();c.width=r.width;c.height=r.height;const g=c.getContext('2d');
+  const L=Array.from({length:26},()=>({x:Math.random()*c.width,y:Math.random()*c.height,s:6+Math.random()*16}));const st=performance.now();
+  (function f(t){const k=(t-st)/1000;g.clearRect(0,0,c.width,c.height);
+    L.forEach((e,i)=>{const o=Math.max(0,Math.min(1,k*1.5-i*.05));if(!o||k>5.5)return;g.save();g.beginPath();g.ellipse(e.x,e.y,e.s,e.s*.6*o,0,0,7);g.fillStyle='#fbf3ff';g.fill();g.clip();
+      const dx=Math.sin(t/300+i)*e.s*.25;g.beginPath();g.arc(e.x+dx,e.y,e.s*.45,0,7);g.fillStyle='#7a3cff';g.fill();g.beginPath();g.arc(e.x+dx,e.y,e.s*.18,0,7);g.fillStyle='#000';g.fill();g.restore()});
+    if(k<6)requestAnimationFrame(f);else g.clearRect(0,0,c.width,c.height)})(st)}
+let buf='';addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;buf=(buf+e.key.toLowerCase()).slice(-8);
+  if(buf.endsWith('shabi'))cosmic('불렀어? 나 여기 있어. 아래에. 위에. 안에.');
+  if(buf.endsWith('yacha'))cosmic('클럽의 진짜 회원은 몇 명일까')});
+let mc=0;$('#moon').onclick=()=>{mc++;if(mc===1)toast('달은 쳐다보지 마');else if(mc===3){mc=0;cosmic('달이 아니었어')}else toast('…')};
+document.addEventListener('selectionchange',()=>{if(getSelection().toString().includes('세어보지'))toast('세어봤구나 ♡',3000)});
+let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();document.title='친구 데리고 돌아와…'}else{document.title='트릿 오어 트릭! 똥내낙원';if(Date.now()-hid>8000)toast('친구 데려왔어? 안 데려왔으면… 장난이야.')}});
+console.log('%c똥내낙원에 오신 걸 환영해요 🎃','font-size:16px;color:#ff9a3c');
+console.log('%c여기까지 들어온 손님은 처음이야. 키보드로 내 이름을 불러봐.','color:#b9a3ff');
+})();
+</script>
+
+</body>
+</html>
